@@ -208,5 +208,5 @@ app.get('/api/health', (req, res) => {
 module.exports = app;
 
 
-// Temporary comment to force a Git change
+// Updated comment to force Git change - ensure multer is properly installed
 
