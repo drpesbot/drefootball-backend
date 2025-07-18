@@ -6,6 +6,13 @@ const { v4: uuidv4 } = require('uuid');
 
 const app = express();
 
+// التحقق من وجود متغير البيئة ADMIN_PASSWORD
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+if (!ADMIN_PASSWORD) {
+  console.error('ADMIN_PASSWORD environment variable is not set. Application cannot start without it.');
+  process.exit(1);
+}
+
 // دالة لتحويل قيم Decimal من DynamoDB
 function sanitize(data) {
     if (Array.isArray(data)) {
@@ -52,9 +59,8 @@ const upload = multer({
 app.post('/api/auth', async (req, res) => {
   try {
     const { password } = req.body;
-    const adminPassword = process.env.ADMIN_PASSWORD || 'killer8speed';
     
-    if (password === adminPassword) {
+    if (password === ADMIN_PASSWORD) {
       res.json({ success: true, message: 'Authentication successful' });
     } else {
       res.status(401).json({ success: false, message: 'Invalid password' });
@@ -85,9 +91,8 @@ app.get('/api/players', async (req, res) => {
 app.post('/api/players', async (req, res) => {
   try {
     const { password, player } = req.body;
-    const adminPassword = process.env.ADMIN_PASSWORD || 'killer8speed';
     
-    if (password !== adminPassword) {
+    if (password !== ADMIN_PASSWORD) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
@@ -116,9 +121,8 @@ app.post('/api/players', async (req, res) => {
 app.put('/api/players/:id', async (req, res) => {
   try {
     const { password, player } = req.body;
-    const adminPassword = process.env.ADMIN_PASSWORD || 'killer8speed';
     
-    if (password !== adminPassword) {
+    if (password !== ADMIN_PASSWORD) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
@@ -147,9 +151,8 @@ app.put('/api/players/:id', async (req, res) => {
 app.delete('/api/players/:id', async (req, res) => {
   try {
     const { password } = req.body;
-    const adminPassword = process.env.ADMIN_PASSWORD || 'killer8speed';
     
-    if (password !== adminPassword) {
+    if (password !== ADMIN_PASSWORD) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
@@ -172,9 +175,8 @@ app.delete('/api/players/:id', async (req, res) => {
 app.post('/api/upload', upload.single('image'), async (req, res) => {
   try {
     const { password } = req.body;
-    const adminPassword = process.env.ADMIN_PASSWORD || 'killer8speed';
     
-    if (password !== adminPassword) {
+    if (password !== ADMIN_PASSWORD) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
@@ -207,15 +209,8 @@ app.get('/api/health', (req, res) => {
 // Export the Express app
 module.exports = app;
 
-
-// Updated comment to force Git change - ensure multer is properly installed
-
-
-
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
 
