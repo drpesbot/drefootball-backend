@@ -128,7 +128,7 @@ app.post("/api/players", async (req, res) => {
     res.json({ success: true, player: sanitizedPlayer });
   } catch (error) {
     console.error("Error adding player:", error);
-    res.status(500).json({ error: "Failed to add player" });
+    res.status(500).json({ message: "Error saving player", error });
   }
 });
 
