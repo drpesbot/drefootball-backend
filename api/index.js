@@ -169,7 +169,7 @@ app.delete("/api/players/:id", async (req, res) => {
 });
 
 // Upload image
-app.post("/api/upapp.delete("/api/players/:id", async (req, res) => {
+app.delete("/api/players/:id", async (req, res) => {
   try {
     const { id } = req.params;
 
