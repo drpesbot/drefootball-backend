@@ -177,10 +177,8 @@ app.delete("/api/players/:id", async (req, res) => {
 });
 
 // Upload image
-app.delete("/api/players/:id", async (req, res) => {
+app.post("/api/upload", upload.single("image"), async (req, res) => {
   try {
-    const { id } = req.params;
-
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
@@ -205,9 +203,34 @@ app.delete("/api/players/:id", async (req, res) => {
   }
 });
 
-// Health check endpoint
-app.get("/api/health", (req, res) => {
-  res.json({ status: "OK", timestamp: new Date().toISOString() });
+// Settings API
+app.get("/api/settings", async (req, res) => {
+  try {
+    const settings = await Settings.findOne();
+    res.json(settings || {});
+  } catch (error) {
+    console.error("Error fetching settings:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.put("/api/settings", async (req, res) => {
+  try {
+    const { welcomeScreen, contactUsButton } = req.body;
+    let settings = await Settings.findOne();
+
+    if (!settings) {
+      settings = new Settings({ welcomeScreen, contactUsButton });
+    } else {
+      settings.welcomeScreen = welcomeScreen;
+      settings.contactUsButton = contactUsButton;
+    }
+    await settings.save();
+    res.json({ message: "Settings updated successfully", settings });
+  } catch (error) {
+    console.error("Error updating settings:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
 // Export the Express app
@@ -216,76 +239,6 @@ module.exports = app;
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-});
-
-
-
-
-
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-// Settings API
-app.get("/api/settings", async (req, res) => {
-  try {
-    const settings = await Settings.findOne();
-    res.json(settings || {});
-  } catch (error) {
-    console.error("Error fetching settings:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
-
-app.put("/api/settings", async (req, res) => {
-  try {
-    const { welcomeScreen, contactUsButton } = req.body;
-    let settings = await Settings.findOne();
-
-    if (!settings) {
-      settings = new Settings({ welcomeScreen, contactUsButton });
-    } else {
-      settings.welcomeScreen = welcomeScreen;
-      settings.contactUsButton = contactUsButton;
-    }
-    await settings.save();
-    res.json({ message: "Settings updated successfully", settings });
-  } catch (error) {
-    console.error("Error updating settings:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
-
-// Settings API
-app.get("/api/settings", async (req, res) => {
-  try {
-    const settings = await Settings.findOne();
-    res.json(settings || {});
-  } catch (error) {
-    console.error("Error fetching settings:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-});
-
-app.put("/api/settings", async (req, res) => {
-  try {
-    const { welcomeScreen, contactUsButton } = req.body;
-    let settings = await Settings.findOne();
-
-    if (!settings) {
-      settings = new Settings({ welcomeScreen, contactUsButton });
-    } else {
-      settings.welcomeScreen = welcomeScreen;
-      settings.contactUsButton = contactUsButton;
-    }
-    await settings.save();
-    res.json({ message: "Settings updated successfully", settings });
-  } catch (error) {
-    console.error("Error updating settings:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
 });
 
 
