@@ -1,3 +1,6 @@
+const mongoose = require("mongoose");
+const Settings = require("../models/Settings");
+
 const express = require("express");
 const cors = require("cors");
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
@@ -7,6 +10,11 @@ const multer = require("multer");
 const { v4: uuidv4 } = require("uuid");
 
 const app = express();
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch(err => console.error("MongoDB connection error:", err));
 
 // التحقق من وجود متغير البيئة ADMIN_PASSWORD
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
@@ -214,6 +222,41 @@ app.listen(PORT, () => {
 
 
 
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+// Settings API
+app.get("/api/settings", async (req, res) => {
+  try {
+    const settings = await Settings.findOne();
+    res.json(settings || {});
+  } catch (error) {
+    console.error("Error fetching settings:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.put("/api/settings", async (req, res) => {
+  try {
+    const { welcomeScreen, contactUsButton } = req.body;
+    let settings = await Settings.findOne();
+
+    if (!settings) {
+      settings = new Settings({ welcomeScreen, contactUsButton });
+    } else {
+      settings.welcomeScreen = welcomeScreen;
+      settings.contactUsButton = contactUsButton;
+    }
+    await settings.save();
+    res.json({ message: "Settings updated successfully", settings });
+  } catch (error) {
+    console.error("Error updating settings:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
 
 // Settings API
 app.get("/api/settings", async (req, res) => {
