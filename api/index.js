@@ -109,9 +109,11 @@ app.get("/api/players", async (req, res) => {
 app.post("/api/players", async (req, res) => {
   try {
     console.log("Request Body:", req.body);
+    const { name, overallRating, finishing, passing, dribbling, dexterity, lowerBodyStrength, aerialStrength, defending, gk1, gk2, gk3, booster, image } = req.body;
+    const playerId = uuidv4();
     const playerData = {
       id: playerId,
-      ...req.body,
+      name, overallRating, finishing, passing, dribbling, dexterity, lowerBodyStrength, aerialStrength, defending, gk1, gk2, gk3, booster, image,
       createdAt: new Date().toISOString()
     };
 
