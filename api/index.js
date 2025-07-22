@@ -100,11 +100,7 @@ app.get("/api/players", async (req, res) => {
 // Add new player
 app.post("/api/players", async (req, res) => {
   try {
-    const { password, player } = req.body;
-    
-    if (password !== ADMIN_PASSWORD) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+    const { player } = req.body;
 
     const playerId = Date.now().toString();
     const playerData = {
@@ -131,11 +127,7 @@ app.post("/api/players", async (req, res) => {
 // Update player
 app.put("/api/players/:id", async (req, res) => {
   try {
-    const { password, player } = req.body;
-    
-    if (password !== ADMIN_PASSWORD) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+    const { player } = req.body;
 
     const { id } = req.params;
     const playerData = {
@@ -161,12 +153,6 @@ app.put("/api/players/:id", async (req, res) => {
 // Delete player
 app.delete("/api/players/:id", async (req, res) => {
   try {
-    const { password } = req.body;
-    
-    if (password !== ADMIN_PASSWORD) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-
     const { id } = req.params;
 
     const params = {
@@ -183,13 +169,9 @@ app.delete("/api/players/:id", async (req, res) => {
 });
 
 // Upload image
-app.post("/api/upload", upload.single("image"), async (req, res) => {
+app.post("/api/upapp.delete("/api/players/:id", async (req, res) => {
   try {
-    const { password } = req.body;
-    
-    if (password !== ADMIN_PASSWORD) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+    const { id } = req.params;
 
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
