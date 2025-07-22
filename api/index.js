@@ -109,13 +109,9 @@ app.get("/api/players", async (req, res) => {
 app.post("/api/players", async (req, res) => {
   try {
     console.log("Request Body:", req.body);
-    const { player } = req.body;
-
-    const playerId = Date.now().toString();
     const playerData = {
       id: playerId,
-      ...player,
-      image: player.image, // إضافة حقل الصورة
+      ...req.body,
       createdAt: new Date().toISOString()
     };
 
@@ -136,11 +132,9 @@ app.post("/api/players", async (req, res) => {
 // Update player
 app.put("/api/players/:id", async (req, res) => {
   try {
-    const { player } = req.body;
-
     const { id } = req.params;
     const playerData = {
-      ...player,
+      ...req.body,
       id,
       updatedAt: new Date().toISOString()
     };
