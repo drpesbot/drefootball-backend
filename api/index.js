@@ -108,6 +108,7 @@ app.get("/api/players", async (req, res) => {
 // Add new player
 app.post("/api/players", async (req, res) => {
   try {
+    console.log("Request Body:", req.body);
     const { player } = req.body;
 
     const playerId = Date.now().toString();
