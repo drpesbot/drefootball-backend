@@ -213,3 +213,36 @@ app.listen(PORT, () => {
 
 
 
+
+
+// Settings API
+app.get("/api/settings", async (req, res) => {
+  try {
+    const settings = await Settings.findOne();
+    res.json(settings || {});
+  } catch (error) {
+    console.error("Error fetching settings:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+app.put("/api/settings", async (req, res) => {
+  try {
+    const { welcomeScreen, contactUsButton } = req.body;
+    let settings = await Settings.findOne();
+
+    if (!settings) {
+      settings = new Settings({ welcomeScreen, contactUsButton });
+    } else {
+      settings.welcomeScreen = welcomeScreen;
+      settings.contactUsButton = contactUsButton;
+    }
+    await settings.save();
+    res.json({ message: "Settings updated successfully", settings });
+  } catch (error) {
+    console.error("Error updating settings:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+
